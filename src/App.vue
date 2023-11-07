@@ -1,30 +1,53 @@
 <template>
     <div class="app">
-        <PostForm @create="createPost" />
-        <PostList :posts="posts" />
+        <h1>Posts page</h1>
+        <header class="head">
+            <CustomButton @click="fetchPosts" class="btn">Get posts</CustomButton>
+            <CustomButton @click="showModal" class="btn">Create post</CustomButton>
+        </header>
+        <Modal v-model:show="modalShow"><PostForm @create="createPost" /></Modal>
+        <PostList :posts="posts" @remove="removePost" />
     </div>
 </template>
 
 <script>
 import PostList from '@/components/PostList.vue';
 import PostForm from '@/components/PostForm.vue';
+import CustomButton from '@/components/common/CustomButton.vue';
+import Modal from '@/components/common/Modal.vue';
+import axios from 'axios';
 
 export default {
-    components: { PostForm, PostList },
+    components: { Modal, CustomButton, PostForm, PostList },
     data() {
         return {
-            posts: [
-                { id: 1, name: 'Javascript 1', description: 'Post about JS #1' },
-                { id: 2, name: 'Javascript 2', description: 'Post about JS #2' },
-                { id: 3, name: 'Javascript 3', description: 'Post about JS #3' },
-                { id: 4, name: 'Javascript 4', description: 'Post about JS #4' }
-            ]
+            posts: [],
+            modalShow: false
         };
     },
     methods: {
         createPost(post, ...params) {
             console.log(post, ...params);
             this.posts.push(post);
+            this.modalShow = false;
+        },
+        removePost(post, ...params) {
+            console.log(post, ...params);
+            this.posts = this.posts.filter((p) => p.id !== post.id);
+        },
+        showModal() {
+            this.modalShow = true;
+        },
+        async fetchPosts() {
+            try {
+                const response = await axios.get(
+                    'https://jsonplaceholder.typicode.com/posts?_limit=10'
+                );
+                console.log(response);
+                this.posts = response.data;
+            } catch (e) {
+                alert(`Error: ${e}`);
+            }
         }
     }
 };
@@ -38,5 +61,10 @@ export default {
 }
 .app {
     padding: 16px;
+}
+.head {
+    display: flex;
+    margin: 16px 0 24px;
+    gap: 12px;
 }
 </style>
