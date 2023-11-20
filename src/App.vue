@@ -10,7 +10,8 @@
             <post-list :posts="sortedAndSearchedPosts" @remove="removePost" v-if="!isPostLoading" />
             <div v-else>Loading</div>
         </div>
-        <post-pagination :total="total" :page="page" @page="changePage" />
+        <!--        <post-pagination :total="total" :page="page" @page="changePage" />-->
+        <div class="observer" ref="observer"></div>
         <modal v-model:show="modalShow"><PostForm @create="createPost" /></modal>
     </main>
 </template>
@@ -64,9 +65,9 @@ export default {
         showModal() {
             this.modalShow = true;
         },
-        changePage(page) {
-            this.page = page;
-        },
+        // changePage(page) {
+        //     this.page = page;
+        // },
         async fetchPosts() {
             this.isPostLoading = true;
             try {
@@ -84,15 +85,41 @@ export default {
             } finally {
                 this.isPostLoading = false;
             }
+        },
+        async loadMore() {
+            this.page += 1;
+            try {
+                const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
+                    params: {
+                        _page: this.page,
+                        _limit: this.limit
+                    }
+                });
+                console.log(response);
+                this.total = Math.ceil(response.headers['x-total-count'] / this.limit);
+                this.posts = [...this.posts, ...response.data];
+            } catch (e) {
+                alert(`Error: ${e}`);
+            }
         }
     },
     mounted() {
         this.fetchPosts();
+        const callback = (entries, observer) => {
+            if (entries[0].isIntersecting && this.page < this.total) {
+                this.loadMore();
+            }
+        };
+        const observer = new IntersectionObserver(callback, {
+            rootMargin: '8px',
+            threshold: 1.0
+        });
+        observer.observe(this.$refs.observer);
     },
     watch: {
-        page() {
-            this.fetchPosts();
-        }
+        // page() {
+        //     this.fetchPosts();
+        // }
         // selectedSort(newValue) {
         //     this.posts.sort((a, b) => {
         //         return a[newValue]?.localeCompare(b[newValue]);
