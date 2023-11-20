@@ -1,6 +1,7 @@
 <template>
     <div class="post">
         <div>
+            <div>{{ post.id }}</div>
             <div><strong>Post title:</strong> {{ post.title }}</div>
             <div><strong>Description:</strong> {{ post.body }}</div>
         </div>
@@ -14,6 +15,7 @@
 import CustomButton from '@/components/common/CustomButton.vue';
 
 export default {
+    name: 'PostItem',
     components: { CustomButton },
     props: {
         post: {

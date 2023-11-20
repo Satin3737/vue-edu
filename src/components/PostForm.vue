@@ -12,6 +12,7 @@ import CustomInput from '@/components/common/CustomInput.vue';
 import CustomButton from '@/components/common/CustomButton.vue';
 
 export default {
+    name: 'PostForm',
     components: { CustomButton, CustomInput },
     props: {},
     data() {
