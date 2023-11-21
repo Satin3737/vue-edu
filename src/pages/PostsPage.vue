@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1>Posts page</h1>
-        <custom-input v-model="searchQuery" placeholder="Search post..." />
+        <custom-input v-focus v-model="searchQuery" placeholder="Search post..." />
         <header class="head">
             <custom-button @click="showModal" class="btn">Create post</custom-button>
             <custom-select v-model="selectedSort" :options="sortingOptions" />
@@ -11,7 +11,7 @@
             <div v-else>Loading</div>
         </div>
         <!--        <post-pagination :total="total" :page="page" @page="changePage" />-->
-        <div class="observer" ref="observer"></div>
+        <div class="observer" v-intersection="loadMore"></div>
         <modal v-model:show="modalShow"><PostForm @create="createPost" /></modal>
     </div>
 </template>
@@ -88,34 +88,26 @@ export default {
             }
         },
         async loadMore() {
-            this.page += 1;
-            try {
-                const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
-                    params: {
-                        _page: this.page,
-                        _limit: this.limit
-                    }
-                });
-                console.log(response);
-                this.total = Math.ceil(response.headers['x-total-count'] / this.limit);
-                this.posts = [...this.posts, ...response.data];
-            } catch (e) {
-                alert(`Error: ${e}`);
+            if (this.page < this.total) {
+                this.page += 1;
+                try {
+                    const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
+                        params: {
+                            _page: this.page,
+                            _limit: this.limit
+                        }
+                    });
+                    console.log(response);
+                    this.total = Math.ceil(response.headers['x-total-count'] / this.limit);
+                    this.posts = [...this.posts, ...response.data];
+                } catch (e) {
+                    alert(`Error: ${e}`);
+                }
             }
         }
     },
     mounted() {
         this.fetchPosts();
-        const callback = (entries, observer) => {
-            if (entries[0].isIntersecting && this.page < this.total) {
-                this.loadMore();
-            }
-        };
-        const observer = new IntersectionObserver(callback, {
-            rootMargin: '8px',
-            threshold: 1.0
-        });
-        observer.observe(this.$refs.observer);
     },
     watch: {
         // page() {

@@ -5,19 +5,11 @@
 </template>
 
 <script>
+import toggleMIxin from '@/mixins/toggleMIxin';
+
 export default {
     name: 'Modal',
-    props: {
-        show: {
-            type: Boolean,
-            default: false
-        }
-    },
-    methods: {
-        hideModal() {
-            this.$emit('update:show', false);
-        }
-    }
+    mixins: [toggleMIxin]
 };
 </script>
 

@@ -6,6 +6,7 @@
             <div><strong>Description:</strong> {{ post.body }}</div>
         </div>
         <div class="buttons">
+            <CustomButton @click="$router.push(`/posts/${post.id}`)">Opeen post</CustomButton>
             <CustomButton @click="$emit('remove', post)">Delete post</CustomButton>
         </div>
     </div>
@@ -34,10 +35,10 @@ export default {
     padding: 15px;
     border: 2px solid teal;
     margin: 16px 0;
+    gap: 24px;
 }
 .buttons {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
+    gap: 8px;
 }
 </style>
