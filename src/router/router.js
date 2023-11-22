@@ -3,6 +3,7 @@ import HomePage from '@/pages/HomePage.vue';
 import PostsPage from '@/pages/PostsPage.vue';
 import AboutPage from '@/pages/AboutPage.vue';
 import SinglePage from '@/pages/SinglePage.vue';
+import PostsPageWithStore from '@/pages/PostsPageWithStore.vue';
 
 const routes = [
     {
@@ -20,6 +21,10 @@ const routes = [
     {
         path: '/about',
         component: AboutPage
+    },
+    {
+        path: '/store',
+        component: PostsPageWithStore
     }
 ];
 
