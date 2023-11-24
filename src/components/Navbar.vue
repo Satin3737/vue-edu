@@ -7,6 +7,7 @@
             <custom-button @click="$router.push('/posts')">Posts</custom-button>
             <custom-button @click="$router.push('/about')">About</custom-button>
             <custom-button @click="$router.push('/store')">Vuex Store</custom-button>
+            <custom-button @click="$router.push('/composition')">Composition</custom-button>
         </div>
     </header>
 </template>
